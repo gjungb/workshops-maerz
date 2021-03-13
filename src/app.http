@@ -1,10 +1,10 @@
 ###
 
-POST http://localhost:3000
+POST http://localhost:3000/greeting
 content-type: application/json
 
 {
-    "message": "Mausi"
+    "message": "Ada"
 }
 
 ###

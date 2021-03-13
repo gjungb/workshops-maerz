@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 @Injectable()
 export class AppService {
   /**
-   * An RXJS Subject acts as a bridge between Controller and Gateway
+   * An RXJS Subject that may act as a bridge, e.g. between Controller(s) and Gateway(s)
    */
   private readonly message$$ = new Subject<string>();
 
