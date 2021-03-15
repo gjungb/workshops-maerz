@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Subject } from 'rxjs';
+import { Message } from './message.interface';
 
 @Injectable()
 export class AppService {
   /**
    * An RXJS Subject that may act as a bridge, e.g. between Controller(s) and Gateway(s)
    */
-  private readonly message$$ = new Subject<string>();
+  private readonly message$$ = new Subject<Message>();
 
   /**
    * An RxJS Observable that anyone can subscribe to
@@ -15,9 +16,9 @@ export class AppService {
 
   /**
    * Send a message to all connected subscribers
-   * @param value The message content
+   * @param value The message
    */
-  sendMessage(value: string): void {
+  sendMessage(value: Message): void {
     this.message$$.next(value);
   }
 

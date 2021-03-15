@@ -29,7 +29,7 @@ socket$$
  * Send an initial 'interest' for the 'message' channel
  * @see AppGateway#handleMessage()
  */
-socket$$.next({ event: 'message', data: Date.now() });
+socket$$.next({ event: 'message', data: Math.ceil(Math.random() * 10) });
 
 /**
  * Start a timer on a regular basis to send data to the 'ping' channel

@@ -6,7 +6,7 @@ import {
   WsResponse,
 } from '@nestjs/websockets';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import WebSocket from 'ws';
 import { AppService } from './app.service';
 
@@ -30,14 +30,15 @@ export class AppGateway implements OnGatewayConnection {
 
   /**
    * Handle data sent to the 'message' channel
-   * @param data Some arbitrary number for demonstration purposes only
+   * @param uid A fictional user id for demonstration purposes only
    * @returns An RxJS Observable that informs the client whenever a message has been passed to the @see AppService
    */
   @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: number): Observable<WsResponse<string>> {
-    console.log(data);
+  handleMessage(@MessageBody() uid: number): Observable<WsResponse<string>> {
+    console.log(uid);
     return this.app.message$.pipe(
-      map((message) => ({ event: 'message', data: message })),
+      filter((message) => message.uid === uid),
+      map((message) => ({ event: 'message', data: message.text })),
     );
   }
 }
