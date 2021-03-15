@@ -2,11 +2,13 @@ const { timer } = rxjs;
 const { map, tap } = rxjs.operators;
 const { webSocket } = rxjs.webSocket;
 
+const host = new URL(window.location).host;
+
 /**
  * An RxJS Subject that is able to send / receive data via a WebSocket connection
  * @see https://rxjs.dev/api/webSocket/webSocket
  */
-const socket$$ = webSocket('ws://localhost:3000');
+const socket$$ = webSocket(`ws://${host}`);
 
 /**
  * An output container
