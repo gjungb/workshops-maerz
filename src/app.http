@@ -1,0 +1,10 @@
+@protocol = http
+@hostname = localhost
+@port = 3000
+@host = {{protocol}}://{{hostname}}:{{port}}
+
+GET {{host}}
+
+###
+
+GET {{host}}/books
