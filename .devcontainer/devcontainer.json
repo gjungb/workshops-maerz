@@ -29,7 +29,9 @@
 		"mtxr.sqltools-driver-pg",
 		"github.vscode-pull-request-github",
 		"eamodio.gitlens",
-		"prisma.prisma"
+		"prisma.prisma",
+		"humao.rest-client",
+		"esbenp.prettier-vscode"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
