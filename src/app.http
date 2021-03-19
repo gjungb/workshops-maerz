@@ -3,8 +3,24 @@
 @port = 3000
 @host = {{protocol}}://{{hostname}}:{{port}}
 
-GET {{host}}
+
+GET http://localhost:3000
 
 ###
 
 GET {{host}}/books
+
+###
+
+GET {{host}}/books/978-0-20163-361-0
+
+###
+
+POST {{host}}/books
+Content-Type: application/json
+
+{
+    "title": "Das Buch",
+    "isbn": "978-3-16-148410-0",
+    "numPages": 1234
+}
