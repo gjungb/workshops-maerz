@@ -9,56 +9,21 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { BooksService } from './books.service';
 import { CreateBookDto } from './create-book-dto';
 
 @Controller('books')
 @ApiTags('books')
 export class BooksController {
-  private books: ReadonlyArray<any> = [
-    {
-      title: 'NestJS Beginner Book by Angular.DE',
-      subtitle: 'From Angular to Nest in just a few pages',
-      isbn: '978-0-20163-361-0',
-      abstract: 'Awesome abstract for an awesome book.',
-      numPages: 395,
-      author: 'Robin Böhm',
-      publisher: {
-        name: 'Workshops.DE Publisher',
-        url: 'http://www.workshops.de/',
-      },
-    },
-    {
-      title: 'Nest and HTTP',
-      subtitle: 'Special Http usecases for microservices with NestJS',
-      isbn: '978-3-86490-120-1',
-      abstract: 'Build to scale',
-      numPages: 330,
-      author: 'Gerd Jungbluth',
-      publisher: {
-        name: 'Workshops.DE Publisher',
-        url: 'http://www.workshops.de/',
-      },
-    },
-    {
-      title: 'Eloquent NestJS',
-      subtitle: 'Ninja Style NestJS tips & tricks',
-      isbn: '978-1-59327-584-6',
-      abstract: 'Every professionell NestJS Developer should read this book',
-      numPages: 472,
-      author: 'Sascha Nuissl',
-      publisher: {
-        name: 'Workshops.DE Publisher',
-        url: 'http://www.workshops.de/',
-      },
-    },
-  ];
+  constructor(private readonly booksService: BooksService) {}
 
   @Post()
   @UsePipes(ValidationPipe)
-  createBook(@Body() payload: CreateBookDto): number {
-    this.books = [...this.books, payload];
-    return this.books.length;
+  async createBook(@Body() payload: CreateBookDto): Promise<number> {
+    const res = await this.booksService.create(payload);
+    // do some stuff
+    return res;
   }
 
   @Get(':isbn')
@@ -66,8 +31,9 @@ export class BooksController {
     name: 'isbn',
     description: 'a valid ISBN',
   })
-  readBookByIsbn(@Param('isbn') isbn: string): unknown {
-    return this.books.find((book) => book.isbn === isbn);
+  readBookByIsbn(@Param('isbn') isbn: string): Promise<unknown> {
+    // console.log(this);
+    return this.booksService.findOne(isbn);
   }
 
   /**
@@ -77,7 +43,7 @@ export class BooksController {
   @Get()
   @HttpCode(HttpStatus.I_AM_A_TEAPOT)
   @ApiOperation({ description: 'A list of books' })
-  readBooks(): unknown[] {
-    return [...this.books];
+  readBooks(): Promise<unknown[]> {
+    return this.booksService.findAll();
   }
 }

@@ -24,3 +24,7 @@ Content-Type: application/json
     "isbn": "978-3-16-148410-0",
     "numPages": 1234
 }
+
+###
+
+GET http://localhost:4730/books

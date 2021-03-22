@@ -1,11 +1,17 @@
-import { Module } from '@nestjs/common';
+import { Module, HttpModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BooksController } from './books/books.controller';
+import { BooksService } from './books/books.service';
+import { HttpBooksService } from './http-books/http-books.service';
 
 @Module({
-  imports: [],
+  imports: [HttpModule],
   controllers: [AppController, BooksController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    { provide: BooksService, useClass: HttpBooksService },
+    { provide: 'EXTERNAL_API', useValue: 'http://...' },
+  ],
 })
 export class AppModule {}
