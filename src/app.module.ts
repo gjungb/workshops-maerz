@@ -10,8 +10,9 @@ import { HttpBooksService } from './http-books/http-books.service';
   controllers: [AppController, BooksController],
   providers: [
     AppService,
-    { provide: BooksService, useClass: HttpBooksService },
-    { provide: 'EXTERNAL_API', useValue: 'http://...' },
+    { provide: BooksService, useClass: BooksService },
+    { provide: 'EXTERNAL_API', useValue: 'http://localhost:4730/books' },
   ],
+  exports: [BooksService],
 })
 export class AppModule {}

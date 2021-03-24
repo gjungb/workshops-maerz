@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Observable, of } from 'rxjs';
 import { CreateBookDto } from './create-book-dto';
 
 @Injectable()
@@ -69,7 +70,7 @@ export class BooksService {
    *
    * @returns
    */
-  async findAll(): Promise<unknown[]> {
-    return [...this.books];
+  findAll(): Observable<unknown[]> {
+    return of([...this.books]);
   }
 }

@@ -1,16 +1,19 @@
-import { HttpService, Injectable } from '@nestjs/common';
+import { HttpService, Inject, Injectable } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { delay, map, tap } from 'rxjs/operators';
 
 @Injectable()
 export class HttpBooksService {
-  constructor(private readonly client: HttpService) {}
+  constructor(
+    private readonly client: HttpService,
+    @Inject('EXTERNAL_API') private readonly url: string,
+  ) {}
 
-  findAll(): Promise<unknown[]> {
-    const res$ = this.client.get('http://localhost:4730/books');
-
-    const p = res$.toPromise().then((value) => {
-      return value.data;
-    });
-
-    return p;
+  findAll(): Observable<unknown[]> {
+    return this.client.get(this.url).pipe(
+      // delay(2000),
+      map((value) => value.data),
+      tap((res) => console.log(res)),
+    );
   }
 }
