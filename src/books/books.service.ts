@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { CreateBookDto } from './create-book-dto';
 
 @Injectable()
@@ -59,11 +60,12 @@ export class BooksService {
    * @returns
    */
   findOne(isbn: string): Promise<unknown> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(this.books.find((book) => book.isbn === isbn));
-      }, 3000);
-    });
+    const book = this.books.find((book) => book.isbn === isbn);
+
+    if (book) {
+      return Promise.resolve(book);
+    }
+    return Promise.reject(`No book found for ISBN ${isbn}`);
   }
 
   /**
@@ -71,6 +73,8 @@ export class BooksService {
    * @returns
    */
   findAll(): Observable<unknown[]> {
-    return of([...this.books]);
+    return of([...this.books]).pipe(
+      switchMap(() => throwError('Database is down')),
+    );
   }
 }

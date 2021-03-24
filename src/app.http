@@ -8,11 +8,14 @@ GET http://localhost:3000
 
 ###
 
+
 GET {{host}}/books
+X-UserId: 1701
 
 ###
 
 GET {{host}}/books/978-0-20163-361-0
+X-UserId: 1701
 
 ###
 

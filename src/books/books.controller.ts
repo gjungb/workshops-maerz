@@ -2,16 +2,18 @@ import {
   Body,
   Controller,
   Get,
-  HttpCode,
-  HttpStatus,
+  NotFoundException,
   Param,
   Post,
+  ServiceUnavailableException,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { User, UserData } from 'src/decorators/user.decorator';
 import { UserGuard } from 'src/shared/user.guard';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './create-book-dto';
@@ -35,14 +37,23 @@ export class BooksController {
     name: 'isbn',
     description: 'a valid ISBN',
   })
-  readBookByIsbn(@Param('isbn') isbn: string): Promise<unknown> {
-    // console.log(this);
-    // this.foo = await this.booksService.findOne(isbn)
-    // do some stuff
-    // const {author} = this.foo
-    // const res = await this.db.getStuff(author);
-    // return {foo: this.foo, res: res};
-    return this.booksService.findOne(isbn);
+  async readBookByIsbn(
+    @Param('isbn') isbn: string,
+    @User() user: UserData,
+  ): Promise<unknown> {
+    // const foo = this.booksService.findOne(isbn);
+    // const bar = this.booksService.findAll();
+    // do stuff foo, bar
+    // Promise.all([foo, bar]).then((res1, res2) => {});
+
+    console.log(user);
+
+    try {
+      const book = await this.booksService.findOne(isbn);
+      return book;
+    } catch (err) {
+      throw new NotFoundException(err);
+    }
   }
 
   /**
@@ -50,9 +61,12 @@ export class BooksController {
    * @returns
    */
   @Get()
-  @HttpCode(HttpStatus.I_AM_A_TEAPOT)
   @ApiOperation({ description: 'A list of books' })
   readBooks(): Observable<unknown[]> {
-    return this.booksService.findAll();
+    return this.booksService.findAll().pipe(
+      catchError((err: any) => {
+        return throwError(new ServiceUnavailableException(err));
+      }),
+    );
   }
 }
